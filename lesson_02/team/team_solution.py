@@ -23,10 +23,12 @@ class Request_Thread(threading.Thread):
         super().__init__()
         self.url = url
         self.response = {}
+        self.status_code = {}
 
     def run(self):
         response = requests.get(self.url)
         # Check the status code to see if the request succeeded.
+        self.status_code = response.status_code
         if response.status_code == 200:
             self.response = response.json()
         else:
@@ -51,7 +53,7 @@ class Deck:
         req = Request_Thread(rf'https://deckofcardsapi.com/api/deck/{self.id}/draw/')
         req.start()
         req.join()
-        if req.response != {}:
+        if req.status_code == 200 and req.response != {}:
             self.remaining = req.response['remaining']
             return req.response['cards'][0]['code']
         else:
@@ -70,7 +72,7 @@ class Deck:
 if __name__ == '__main__':
 
     # DONE: Run the program team_get_deck_id.py ONCE and insert the deck ID here.
-    deck_id = 'yzl8g57q8wrj'
+    deck_id = 'CODE'
 
     deck = Deck(deck_id)
 

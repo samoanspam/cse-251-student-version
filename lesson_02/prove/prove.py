@@ -12,7 +12,7 @@ Instructions:
 - You are not allowed to use any other modules/packages except for the ones used
   in this assignment.
 - Run the server.py program from a terminal/console program.  Simply type
-  "python server.py"
+  "python server.py" and leave it running.
 - The only "fixed" or hard coded URL that you can use is TOP_API_URL.  Use this
   URL to retrieve other URLs that you can use to retrieve information from the
   server.

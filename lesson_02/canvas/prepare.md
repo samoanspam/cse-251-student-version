@@ -5,12 +5,12 @@ Section | Content
 1   | [Overview](#overview)
 2   | [States of a Thread](#states-of-a-thread) :key:
 2.1 | [I/O Bound and CPU Bound Code](#io-bound-and-cpu-bound-code)
-2.2 | [Thread Objects](#thread-objects)
-2.3 | [What is shared between Threads?](#what-is-shared-between-threads) :key:
-2.4 | [Thread Safe](#thread-safe) :key:
-3   | [Race Conditions](#race-conditions) :key:
-4   | [Deadlock](#deadlock) :key:
-5   | [Synchronization Tools](#synchronization-tools) :key:
+3   | [Thread Objects](#thread-objects)
+3.1 | [What is shared between Threads?](#what-is-shared-between-threads) :key:
+3.2 | [Thread Safe](#thread-safe) :key:
+4   | [Race Conditions](#race-conditions) :key:
+5   | [Deadlock](#deadlock) :key:
+6   | [Synchronization Tools](#synchronization-tools) :key:
 
 :key: = Vital concepts that we will continue to build on in coming lessons / key learning outcomes for this course.
 
@@ -55,8 +55,7 @@ Remember that we can write code to run in parallel or concurrently depending on 
 - I/O bound code will cycle between `running` -> `blocked` -> `waiting` states.
 - CPU bound code will bounce between `running` and `waiting` states.
 
-
-### Thread Objects
+## Thread Objects
 
 Python allows the creation of threaded classes. Instead of just having a function that is a thread, a threaded class allows for more complex code. You should watch a [review of classes in Python](https://www.youtube.com/watch?v=ZDa-Z5JzLYM).
 
@@ -72,7 +71,6 @@ After you create an instance of this class, when you call the `start()` method, 
 
 ```python
 import threading
-import time
 
 class Display_Hello(threading.Thread):
 
@@ -92,12 +90,15 @@ class Display_Hello(threading.Thread):
     
 
 if __name__ == '__main__':
+    # This is how to create the thread object -> name of the class and arguments for __init__()
 	hello1 = Display_Hello(1, 'Hello from thread 1')
 	hello2 = Display_Hello(2, 'Hello from thread 2')
 
+    # Start still needs to be called.  This will call the run() method in the object.
 	hello1.start()
 	hello2.start()
 
+    # Wait for them to finish
 	hello1.join()
 	hello2.join()
 ```
@@ -154,9 +155,7 @@ Add_Two(200) returns 202
 
 ### What is shared between Threads?
 
-You can easily share resources between threads. Any global variables are shared for example; but good programmers avoid global variables because of the side-effects that can happen with them. Thankfully the shared data doesn't have to be a global variable. You can pass a list or dictionary to all threads so they sharing that single object.
-
-Each thread has its own function stack. This means that local variables that are created in a thread are unique to that thread.
+You can easily share resources between threads. Any global variables are shared for example; but good programmers avoid global variables because of the side-effects that can happen with them. Thankfully the shared data doesn't have to be a global variable. You can pass a list or dictionary to all threads so they sharing that single object.  Each thread has its own function stack. This means that local variables that are created in a thread are unique to that thread.
 
 We will learn about other data elements that are used for sharing data between threads and processes later in the course.
 
@@ -166,7 +165,7 @@ We will learn about other data elements that are used for sharing data between t
 
 > A program may execute code in several threads simultaneously in a shared address space where each of those threads has access to virtually all of the memory of every other thread. Thread safety is a property that allows code to run in multithreaded environments by re-establishing some of the correspondences between the actual flow of control and the text of the program, by means of synchronization.
 
-Modern concurrent and parallel programming languages will list which functions and data structures are "thread safe". This means that the function/data structure can be used in threads. 
+Modern concurrent and parallel programming languages will list which functions and data structures are "thread safe". This means that the function/data structure can be used in threads.  When programming in any language, you will need to review what is and isn't thread safe in that language. [Thread Safety in Python](https://python.plainenglish.io/thread-safety-in-python-7441f8627d46)
 
 For example: in the language C++, the `rand()` function is not thread safe. If `rand()` is called in threads, the values returned by the `rand()` function will not be random.
 
@@ -260,11 +259,12 @@ def thread_func(filename, count):
 
 **Semaphore**
 
-A semaphore is a synchronization primitive that allows multiple threads to access a shared resource in a controlled manner. It is essentially a counter that is initialized to a certain value. When a thread wants to access the shared resource, it decrements the semaphore counter. If the counter is zero, the thread blocks until the counter is incremented by another thread. When a thread is finished with the shared resource, it increments the semaphore counter.
+A semaphore is a synchronization primitive that allows multiple threads to access a shared resource in a controlled manner. It is essentially `a counter that is initialized to a certain value` (ie., an integer). When a thread wants to access the shared resource, it decrements the semaphore counter. If the counter is zero, the thread blocks until the counter is incremented by another thread. When a thread is finished with the shared resource, it increments the semaphore counter. `Note that a semaphore of value 1 is the same as a lock.`
 
 For example, let's say you have a shared resource that can only be accessed by 3 threads at a time. You can use a semaphore to implement this by initializing the semaphore to 3. When a thread wants to access the shared resource, it calls the acquire() method on the semaphore. This method will decrement the semaphore counter. If the counter is zero, the method will block until the counter becomes greater than zero. When the thread is finished with the shared resource, it calls the release() method on the semaphore. This method will increment the semaphore counter.
 
-We will cover semaphores in greater depth in a later lesson but for now here is a simple contrived example demonstrating how the code would work:
+
+We will cover semaphores in greater depth in a later lesson but for now here is a simple contrived example demonstrating how the code would work.  Please try the following code on your computer.  You will see that only three threads will get access to the function shared_resource() at a time.  When those 3 leave, 3 more threads will access the function.
 
 ```python
 import threading
@@ -272,14 +272,18 @@ import time
 
 def shared_resource(num):
     print(f'#{num}: I am the shared resource.')
+    time.sleep(2)
 
 def worker_thread(num, semaphore):
+    # The with statement will decrease the semaphore by one.  If the semaphore is zero, then the thread
+    # will wait until another thread is finished with the semaphore where it increments it by one
     with semaphore:
         shared_resource(num)
 
 def main():
     threads = []
 
+    # Allow 3 threads access to the critical section at a time
     semaphore = threading.Semaphore(3)
 
     for i in range(0, 10):

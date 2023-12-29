@@ -4,6 +4,9 @@
 
 The website [http://deckofcardsapi.com](http://deckofcardsapi.com) allows us to make Internet requests for a deck of cards. You will be using the [http://deckofcardsapi.com](http://deckofcardsapi.com) website to implement some Python classes to retrieve playing card information.
 
+The main goal of the team activity is to use the requests package and also have experience using classes in 
+Python.
+
 ### Instructions:
 
 - Do not include any other packages/modules.

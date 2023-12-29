@@ -6,7 +6,7 @@ The python server in this assignment contains details of all of the Star Wars fi
 
 ### Instructions
 
-Using the [lesson_02/prove](../prove/) files you will retrieve data from an API server using threading and the following rules:
+Using all of the files in [lesson_02/prove](../prove/) you will retrieve data from an API server using threading and the following rules:
 
 **Coding Instructions**
 
@@ -23,7 +23,7 @@ The call to TOP_API_URL will return the following Dictionary(JSON). Do NOT have 
 
 ### Sample Output (Log file)
 
-The following is the **required** output of your assignment. Notice that the names of characters, planets, etc... are **sorted**. Don't worry about the blank lines or the extra "," you might get while printing the names. Also, the exact number of calls do not need to match 94 that is in this example (but it should be very close to it).
+The following is the **required** output of your assignment. Notice that the names of characters, planets, etc... are **sorted**. Don't worry about the blank lines or the extra "," you might get while printing the names. Also, the exact number of calls do not need to match 94 that is in this example (but it should be very close to it).  `Optional:` if you want a simple method of displaying a list without the ending comma, look at this article on [list unpacking](https://www.geeksforgeeks.org/packing-and-unpacking-arguments-in-python/)
 
 ```text
 16:57:24| Starting to retrieve data from the server
@@ -34,19 +34,19 @@ The following is the **required** output of your assignment. Notice that the nam
 16:57:35| Released: 2005-05-19
 16:57:35|
 16:57:35| Characters: 34
-16:57:35| Adi Gallia, Anakin Skywalker, Ayla Secura, Bail Prestor Organa, Beru Whitesun lars, C-3PO, Chewbacca, Darth Vader, Dooku, Eeth Koth, Grievous, Ki-Adi-Mundi, Kit Fisto, Leia Organa, Luke Skywalker, Luminara Unduli, Mace Windu, Nute Gunray, Obi-Wan Kenobi, Owen Lars, Padmé Amidala, Palpatine, Plo Koon, Poggle the Lesser, R2-D2, R4-P17, Raymus Antilles, Saesee Tiin, Shaak Ti, Sly Moore, Tarfful, Tion Medon, Wilhuff Tarkin, Yoda,
+16:57:35| Adi Gallia, Anakin Skywalker, Ayla Secura, Bail Prestor Organa, Beru Whitesun lars, C-3PO, Chewbacca, Darth Vader, Dooku, Eeth Koth, Grievous, Ki-Adi-Mundi, Kit Fisto, Leia Organa, Luke Skywalker, Luminara Unduli, Mace Windu, Nute Gunray, Obi-Wan Kenobi, Owen Lars, Padmé Amidala, Palpatine, Plo Koon, Poggle the Lesser, R2-D2, R4-P17, Raymus Antilles, Saesee Tiin, Shaak Ti, Sly Moore, Tarfful, Tion Medon, Wilhuff Tarkin, Yoda
 16:57:35|
 16:57:35| Planets: 13
-16:57:35| Alderaan, Cato Neimoidia, Coruscant, Dagobah, Felucia, Kashyyyk, Mustafar, Mygeeto, Naboo, Polis Massa, Saleucami, Tatooine, Utapau,
+16:57:35| Alderaan, Cato Neimoidia, Coruscant, Dagobah, Felucia, Kashyyyk, Mustafar, Mygeeto, Naboo, Polis Massa, Saleucami, Tatooine, Utapau
 16:57:35|
 16:57:35| Starships: 12
-16:57:35| Banking clan frigte, Belbullab-22 starfighter, CR90 corvette, Droid control ship, Jedi Interceptor, Jedi starfighter, Naboo star skiff, Republic attack cruiser, Theta-class T-2c shuttle, Trade Federation cruiser, V-wing, arc-170,
+16:57:35| Banking clan frigte, Belbullab-22 starfighter, CR90 corvette, Droid control ship, Jedi Interceptor, Jedi starfighter, Naboo star skiff, Republic attack cruiser, Theta-class T-2c shuttle, Trade Federation cruiser, V-wing, arc-170
 16:57:35| 
 16:57:35| Vehicles: 13
-16:57:35| AT-RT, AT-TE, Clone turbo tank, Corporate Alliance tank droid, Droid gunship, Droid tri-fighter, Emergency Firespeeder, LAAT/i, Neimoidian shuttle, Oevvaor jet catamaran, Raddaugh Gnasp fluttercraft, Tsmeu-6 personal wheel bike, Vulture Droid,
+16:57:35| AT-RT, AT-TE, Clone turbo tank, Corporate Alliance tank droid, Droid gunship, Droid tri-fighter, Emergency Firespeeder, LAAT/i, Neimoidian shuttle, Oevvaor jet catamaran, Raddaugh Gnasp fluttercraft, Tsmeu-6 personal wheel bike, Vulture Droid
 16:57:35|
 16:57:35| Species: 20
-16:57:35| Cerean, Chagrian, Clawdite, Droid, Geonosian, Human, Iktotchi, Kaleesh, Kel Dor, Mirialan, Muun, Pau'an, Quermian, Skakoan, Tholothian, Togruta, Toong, Twi'lek, Wookie, Yoda's species,
+16:57:35| Cerean, Chagrian, Clawdite, Droid, Geonosian, Human, Iktotchi, Kaleesh, Kel Dor, Mirialan, Muun, Pau'an, Quermian, Skakoan, Tholothian, Togruta, Toong, Twi'lek, Wookie, Yoda's species
 16:57:35|
 16:57:35| Total Time To complete = 10.76325120
 16:57:35| There were 94 calls to the server
