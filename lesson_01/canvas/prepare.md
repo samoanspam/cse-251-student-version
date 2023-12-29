@@ -383,6 +383,8 @@ Note: the function `dir()` can display the current builtin functions in your pro
 
 Although the GIL will run threads concurrently (ie., one at a time switching quickly between them), you still might need to protect shared data between threads.
 
+A critical section is any code that can only have one thread access it at a time.  This can be one line of code or hundreds.  The main goal of a programmer that is working with threads is to detect critical sections.  If you miss them, your program will have strange behaviors or crash.
+
 For Example: let's say that you have threads that are using a file as a counter (I know that this is a made up example). The file will contain an integer that is the count.
 
 ```python
@@ -392,7 +394,9 @@ def thread_func(filename, count):
     f.close()
 ```
 
-This works great in a single-threaded program. But when we have, say two threads, it can become a problem. Remember, you as the programmer can't control which thread runs on the cpu, or when the operating system will switch to another thread and for how long they will run when they have the CPU.
+This works great in a single-threaded program. But when we have, say two threads, it can become a problem. Remember, you as the programmer can't control which thread runs on the cpu, or when the operating system will switch to another thread and for how long they will run when they have the CPU.  
+
+In the sample below, thread A and B are both using the function `thread_func()`.  Thread A starts running first and opens the file to write the count to it.  However, before it can close the file, the OS removes it from the CPU and starts running thread B.  Thread B will try to open the same file.  This will cause an error because the file is already open by thread A.  In this example. all of the lines in the function `thread_func()` is a critical section.  When a thread opens the file to writing, is must finish closing it before another thread can run the same code.
 
 Thread A | Thread B 
 ---|---
@@ -402,23 +406,23 @@ OS switchs to thread B ==> | &nbsp;
 &nbsp; | f = open(filename, 'w')
 &nbsp;| Program crashes because the file is locked by thread A
 
-In the table above, Thread `B` will crash when trying to open the file in write only mode. This is because Thread `A` never finished closing the file before Thread `B` started.
+Python allows you to denote part of your code as a critical section. [Critical Section webpage](https://en.wikipedia.org/wiki/Critical_section)
 
-Python allows you to denote part of your code as a critical section. A critical section is code that only allows 1 thread to execute at a time. That thread will start and finish executing the code before any other thread can execute it. [Critical Section webpage](https://en.wikipedia.org/wiki/Critical_section)
-
-In the figure, 4 threads are tyring to get into the critical section.
+In the figure, 4 threads are trying to get into the critical section.
 
 ![](assets/synchronizing.jpg)
 
 
-To create a critical section, we will be using the Lock() method in the `threading` module. Calls to `acquire()` and `release()` need to match. If your code doesn't release a lock, then your program will hang on the next call to `acquire()`. This is called Dead Lock.
+To create a critical section, we will be using the Lock() method in the `threading` module. Calls to `acquire()` and `release()` need to match. If your code doesn't release a lock, then your program will hang on the next call to `acquire()`. This is called Dead Lock.  
+
+Note that the lock is for the critical section, NOT for the threads.  If you have 100 threads trying to use the same critical section, then you need 1 lock, not 100.  For example, if you have 4 room mates in an apartment and there is only one bathroom, then you need only one lock for the bathroom door.  In would not make any sense for each room mate to have their own lock to the bathroom.  In this example, the `acquire()` is getting access to the bathroom door and then entering the room.  The `release()` is leaving the room.  Note that if a thread has a lock using `acquire()`, and another thread tries to acquire the same lock, that thread will wait until the first thread releases the lock.  Then, the second thread will acquire the lock and enter the critical section.
 
 You will slow your program if you use too many locks or use them when other solutions are available that don't require locks.
 
-```python
-lock = threading.Lock()
+Here is the correct version of the `thread_func()` function using a lock.
 
-def thread_func(filename, count):
+```python
+def thread_func(filename, count, lock):
     # acquire the lock before entering the critical section
     # If another thread has the lock, this thread will wait
     # until it's released.
@@ -434,6 +438,26 @@ def thread_func(filename, count):
     # wait forever since the release will never happen.
     lock.release()
 
+def main():
+    lock = threading.Lock()
+    thread_func('count.txt', 100, lock)   # Should be called from a thread
+```
+
+Another method of using a lock
+
+```python
+def thread_func(filename, count, lock):
+    # The with statement will acquire() and release() the lock for you
+    # The release() happens when the with is finished
+    with lock:
+        # Do your stuff. Only 1 thread is running this code
+        f = open(filename, 'w')
+        f.write(count)
+        f.close()
+
+def main():
+    lock = threading.Lock()
+    thread_func('count.txt', 100, lock)   # Should be called from a thread
 ```
 
 ### Daemon Threads
