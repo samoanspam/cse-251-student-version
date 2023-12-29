@@ -6,6 +6,10 @@ In the following image, a simple program was run in VSCode.  In terminal window 
 
 ![](pythonpath.png)
 
+The mac Python path is highlighted below
+
+![](macpath.png)
+
 You need to have `git` installed on your computer. [Instructions to installing git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
 
 ```
@@ -28,7 +32,6 @@ from cse251 import *
 `print_dict(dict, title='')`
 
 This function is used while debugging your programs where it will print a dictionary in a readable format.
-
 
 ### Log Class
 

@@ -9,11 +9,12 @@ Purpose: Find prime numbers
 Instructions:
 
 - Don't include any other Python packages or modules
-- Review and follow the team activity instructions (INSTRUCTIONS.md)
+- Review and follow the team activity instructions (team.md)
 """
 
 from datetime import datetime, timedelta
 import threading
+import random
 
 # Include cse 251 common Python files
 from cse251 import *
@@ -26,9 +27,11 @@ def is_prime(n):
     global numbers_processed
     numbers_processed += 1
 
-    """Primality test using 6k+-1 optimization.
+    """
+    Primality test using 6k+-1 optimization.
     From: https://en.wikipedia.org/wiki/Primality_test
     """
+
     if n <= 3:
         return n > 1
     if n % 2 == 0 or n % 3 == 0:
@@ -48,6 +51,8 @@ if __name__ == '__main__':
     # TODO 1) Get this program running
     # TODO 2) move the following for loop into 1 thread
     # TODO 3) change the program to divide the for loop into 10 threads
+    # TODO 4) change range_count to 100007.  Does your program still work?  Can you fix it?
+    # Question: if the number of threads and range_count was random, would your program work?
 
     start = 10000000000
     range_count = 100000

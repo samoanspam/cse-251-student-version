@@ -9,6 +9,7 @@ Purpose: Find prime numbers.
 
 from datetime import datetime, timedelta
 import threading
+import random
 
 
 # Include cse 251 common Python files
@@ -33,10 +34,10 @@ def is_prime(n: int):
     return True
 
 
-def process_range(start, end, lock_prime, lock_processed):
+def process_range(start, end, thread_number, thread_count, lock_prime, lock_processed):
     global prime_count
     global numbers_processed
-    for i in range(start, end):
+    for i in range(start + thread_number, end, thread_count):
         if is_prime(i):
             with lock_prime:
                 prime_count += 1
@@ -51,22 +52,26 @@ if __name__ == '__main__':
     log.start_timer()
 
     start = 10000000000
-    range_count = 100000
 
-    # Is there a critical section?  TWO of them
+    # create random range count and number of threads    
+    range_count = random.randint(100000, 110000)
+    number_threads = random.randint(2, 10)
+
+    numbers_processed = 0
+    prime_count = 0
+
+    log.start_timer()
+
+    # Is there a critical section?  YES!!!! TWO of them!!!
     # the prime count variable AND numbers_processed
     lock_prime = threading.Lock()
     lock_processed = threading.Lock()
 
-    number_threads = 10
     threads = []
-    thread_range = range_count // number_threads
 
-    # Create threads and give each one a range to test
-    for i in range(10):
-        thread_start = start + (thread_range * i)
-        thread_end = thread_start + thread_range
-        t = threading.Thread(target=process_range, args=(thread_start, thread_end, lock_prime, lock_processed))
+    # Create threads and give each one a start and step to test
+    for i in range(number_threads):
+        t = threading.Thread(target=process_range, args=(start, start + range_count, i, number_threads, lock_prime, lock_processed))
         threads.append(t)
 
     # Start all threads
@@ -77,7 +82,6 @@ if __name__ == '__main__':
     for t in threads:
         t.join()
 
-    # Should find 4306 primes
     log.write('')
     log.write(f'{range_count = }')
     log.write(f'{number_threads = }')

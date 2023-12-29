@@ -417,7 +417,7 @@ To create a critical section, we will be using the Lock() method in the `threadi
 
 Note that the lock is for the critical section, NOT for the threads.  If you have 100 threads trying to use the same critical section, then you need 1 lock, not 100.  For example, if you have 4 room mates in an apartment and there is only one bathroom, then you need only one lock for the bathroom door.  In would not make any sense for each room mate to have their own lock to the bathroom.  In this example, the `acquire()` is getting access to the bathroom door and then entering the room.  The `release()` is leaving the room.  Note that if a thread has a lock using `acquire()`, and another thread tries to acquire the same lock, that thread will wait until the first thread releases the lock.  Then, the second thread will acquire the lock and enter the critical section.
 
-You will slow your program if you use too many locks or use them when other solutions are available that don't require locks.
+You will slow your program if you use too many locks or use them when other solutions are available that don't require locks.  The goal is to detect any critical sections in your program and use the fewest number of locks.  Do not use the same lock for different critical sections.  Each critical section requires it's own lock.  Returning to the 4 room mates example, if there were two bathrooms in the apartment, each bathroom door would have their own lock.
 
 Here is the correct version of the `thread_func()` function using a lock.
 

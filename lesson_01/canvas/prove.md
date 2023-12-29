@@ -55,4 +55,4 @@ Assignments are individual and not team based. Any assignments found to be plagi
 
 ### Submission
 
-When finished, upload your Python file to Canvas.
+When finished, upload your Python file `prove.py` to Canvas.
