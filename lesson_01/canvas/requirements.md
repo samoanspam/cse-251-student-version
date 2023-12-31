@@ -43,9 +43,9 @@ When you open a Python file, VSCode will want you to install the Python Package 
 
 ![](assets/code-python-package.png)
 
-### Packages to install in Python
+### You Will Install Python Packages for this Course
 
-The course uses the following Python packages that must be installed on your computer. A computer can have more than one version of Python. It is important that these packages are installed on the version of Python that is used in VSCode.
+The course uses the several Python packages that must be installed on your computer, they are listed in the next section. Keep in mind that a computer can have more than one version of Python. It is important that these packages are installed on the version of Python that is used in VSCode and required for this class; at least 3.10 but the latest version preferably.
 
 1. Open VSCode and create a Python file that will print out `Hello World`
 
@@ -53,15 +53,17 @@ The course uses the following Python packages that must be installed on your com
 print('Hello World')
 ```
 
-2. Run the program and notice the output in the terminal window. **Reminder**: you can't run a Python file until you save it on your computer. The text that is displayed in yellow in this image (you may not have it displayed in yellow on your computer) is the location of Python that VSCode is using on my computer. Your path will be different.
+2. Run the program and notice the output in the terminal window. **Reminder**: You can't run a Python file until you save it on your computer. The terminal window displays the full path of Python in yellow (ie., `"C:/users/.../python.exe"`) in the image below; you may not have it displayed in yellow on your computer. **Your path will most likely be different than what is pictured here**:
 
 
 ![](assets/running-python.png)
 
 
-3. Select and copy the full Python path and paste it in that terminal window. Include any quotes that might be around this path. In most cases for Mac users, the python path will just be `python3`. You will have quotes if the path has spaces in it. Then add the options `-m pip install <package>` where `<package>` is the name of the package you want to install. For example: In the case of numpy, it would be `-m pip install numpy`. 
+3. Select and copy the full Python path and paste it in that terminal window. Include any quotes that might be around this path. In most cases for Mac users, the python path will just be `python3`. You will have quotes if the path has spaces in it. Then add the options `-m pip install <package>` where `<package>` is the name of the package you want to install. For example: In the case of numpy, it would be:
 
-![](assets/running-python-2.png)
+```
+<python path used in VS Code> -m pip install numpy
+```
 
 Note that Mac users might need to add `--user` to the install command line. Also, Mac users can try `pip3 install --user <package>` in the terminal app to see if that works on their computer.
 
@@ -76,4 +78,4 @@ We will be using the following packages that are already installed on you comput
 
 ### CSE251 Library
 
-To simplify the process of creating your assignments we have created a Python package that contains common libraries we expect you to use. Please follow this link for more information about the [CSE 251 Course Package](package.md)
+To simplify the process of creating your assignments we have created a Python package that contains common libraries (additional packages) we expect you to use. Please follow this link for more information about the [CSE 251 Course Package](package.md)

@@ -1,20 +1,24 @@
 # Course Functions and Objects
 
-To simplify the process of creating your assignments we have created a Python package that contains common libraries. You will need to install this package using `pip` and `git`. Run the following command in a terminal. Make sure that you use the same Python version that Visual Code is using when you are running your programs.  It is very common to have multiple versions of Python on your computer.
+To simplify the process of creating your assignments we have created [this Python package](https://github.com/byui-cse/cse251-py-package) that contains common libraries needed for this course. You will need to install this package using `pip` and `git`.
 
-In the following image, a simple program was run in VSCode.  In terminal window displays the full path of Python in yellow. (ie., `"C:/users/.../python.exe"`).  That is the path you must copy and use in the instructions below.  The best method to get the path is to run a simple Python program in VSCode and the path will be displayed.
+If you are comfortable installing python packages please see the [Quick Install](#quick-install) instructions below. If you run into trouble installing the package you should review the [detailed installation instructions](https://github.com/byui-cse/cse251-py-package?tab=readme-ov-file#installation-instructions). **Keep in mind tht it is very common to have multiple versions of Python on your computer. You must ensure that you install this package with the correct python version for this course.**
 
-![](pythonpath.png)
+### Quick Install
 
-The mac Python path is highlighted below
+In the following image, a simple program was run in VSCode. The terminal window displays the full path of Python in yellow. (ie., `"C:/users/.../python.exe"`). That is the path you must copy and use in the instructions below. The best method to get the path is to run a simple Python program in VSCode and the path will be automatically displayed in the output.
 
-![](macpath.png)
+![](./assets/running-python.png)
+
+The mac Python path is highlighted below:
+
+![](./assets/running-python-mac.png)
 
 You need to have `git` installed on your computer. [Instructions to installing git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
 
 ```
 Command to run (Mac or Windows):
-<python path used in VS Code> -m pip install git+https://github.com/byui-cse/cse251-course-files.git
+<python path used in VS Code> -m pip install git+https://github.com/byui-cse/cse251-py-package.git
 ```
 
 ### Using the package in your projects
