@@ -53,7 +53,7 @@ if __name__ == '__main__':
     start = 10000000000
     range_count = 100000
 
-    # Is there a critical section?  TWO of them
+    # Is there a critical section?  TWO of them!!
     # the prime count variable AND numbers_processed
     lock_prime = threading.Lock()
     lock_processed = threading.Lock()
