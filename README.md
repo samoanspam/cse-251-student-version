@@ -1,5 +1,9 @@
 # CSE 251: Concurrency and Parallelism
 
-This is the student repo for the CSE 251 course. This repo is under development and you should rely on the original course repo when necessary: [https://github.com/byui-cse/cse251-course](https://github.com/byui-cse/cse251-course)
+This repository is intended for students enrolled in the CSE 251 course. **Please download a personal copy of this repository instead of forking it.**
 
-Please do not clone or download this repo! It is not finalized and will change weekly this semester.
+![](./assets/download-zip.jpg)
+
+If you choose to fork this repository or upload the course content to your personal GitHub account, please be aware that you DO NOT have the right to publicly post solutions, excluding the solutions we have purposely released. You are more than welcome to keep a private copy of your code in a personal repository for your own reference.
+
+:copyright: 2022 &ndash; 2024 Brigham Young University Idaho. All Rights Reserved.
