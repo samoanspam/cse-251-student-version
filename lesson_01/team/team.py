@@ -2,7 +2,7 @@
 Course: CSE 251 
 Lesson: L01 Team Activity
 File:   team.py
-Author: <Add name here>
+Author: Teia Patane
 
 Purpose: Find prime numbers
 
@@ -19,9 +19,22 @@ import random
 # Include cse 251 common Python files
 from cse251 import *
 
+
 # Global variable for counting the number of primes found
 prime_count = 0
 numbers_processed = 0
+
+def thread_function(start, range_count):
+    global prime_count
+
+    for i in range(start, start + range_count):
+        if is_prime(i):
+            prime_count += 1
+            print(i, end=', ', flush=True)
+    print(flush=True)
+
+
+    # Should find 4306 primes
 
 def is_prime(n):
     global numbers_processed
@@ -54,16 +67,27 @@ if __name__ == '__main__':
     # TODO 4) change range_count to 100007.  Does your program still work?  Can you fix it?
     # Question: if the number of threads and range_count was random, would your program work?
 
+
     start = 10000000000
     range_count = 100000
-    for i in range(start, start + range_count):
-        if is_prime(i):
-            prime_count += 1
-            print(i, end=', ', flush=True)
-    print(flush=True)
 
-    # Should find 4306 primes
+    threads = []
+
+    for i in range(10):
+        i = threading.Thread(target= thread_function, args = (start, range_count))
+        threads.append[i]
+
+
+    for i in threads: 
+        i.start()
+    for i in threads:
+        i.join()
+
+
     log.write(f'Numbers processed = {numbers_processed}')
     log.write(f'Primes found      = {prime_count}')
     log.stop_timer('Total time')
+
+
+
 
