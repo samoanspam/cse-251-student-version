@@ -37,7 +37,7 @@ from cse251 import *
 You may change the following variable to `False` to skip drawing part 1, but you
 must set this value back to `True` when submitting the assignment.
 """
-draw_part_1 = False # <--- You may change this but read above.
+draw_part_1 = True # <--- You may change this but read above.
 
 def draw_square(tur, x, y, side, color='black'):
     """Draw Square"""
