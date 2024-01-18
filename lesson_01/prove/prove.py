@@ -196,7 +196,7 @@ def run_with_threads(tur, log, main_turtle):
 
     for thread in threads:
         thread.join()
-# ----------------------------------------------------------------------
+# ---------------------------------------------------------------------- Try #4
     # def draw_squares_thread(tur):
     #     # with lock:
     #         draw_squares(tur)   
@@ -243,7 +243,7 @@ def run_with_threads(tur, log, main_turtle):
     # for thread in threads:
     #     thread.join()
 
-# ----------------------------------------------------------------------
+# ---------------------------------------------------------------------- Try #3
 
     # def draw_squares_thread(tur, lock):
     #     with lock:
@@ -277,7 +277,7 @@ def run_with_threads(tur, log, main_turtle):
 
     # for thread in threads:
     #     thread.join()
-# ----------------------------------------------------------------------
+# ---------------------------------------------------------------------- Try #2
     # My attempt at doing it yet another way.
     # def draw_threads(shape):
 
@@ -298,7 +298,7 @@ def run_with_threads(tur, log, main_turtle):
 
     # put all the draw functions in a list and then iterate though it with a lock
     
-# ----------------------------------------------------------------------    
+# ---------------------------------------------------------------------- Try #1
     
     # drawFunctions = [draw_circles(tur), draw_rectangles(tur), draw_triangles(tur), draw_squares(tur)]
 
