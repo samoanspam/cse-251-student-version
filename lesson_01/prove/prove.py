@@ -37,7 +37,7 @@ from cse251 import *
 You may change the following variable to `False` to skip drawing part 1, but you
 must set this value back to `True` when submitting the assignment.
 """
-draw_part_1 = True # <--- You may change this but read above.
+draw_part_1 = False # <--- You may change this but read above.
 
 def draw_square(tur, x, y, side, color='black'):
     """Draw Square"""
@@ -165,7 +165,7 @@ def run_no_threads(tur, log, main_turtle):
 def run_with_threads(tur, log, main_turtle):
     """Draw different shapes using threads"""
 
-    # Draw Coors system
+    # Draw Coords system
     tur.pensize(0.5)
     draw_coord_system(tur, 0, 0, size=375)
     tur.pensize(4)
@@ -177,23 +177,188 @@ def run_with_threads(tur, log, main_turtle):
     # You need to use 4 threads where each thread concurrently drawing one type of shape.
     # You are free to change any functions in this code except those we marked DO NOT CHANGE.
 
-    t1 = threading.Thread(target = draw_squares, args = tur,)
-    t2 = threading.Thread(target = draw_circles, args = tur,)
-    t3 = threading.Thread(target = draw_triangles, args = tur,)
-    t4 = threading.Thread(target = draw_rectangles, args = tur,)
+    lock = threading.Lock()
+
+    def draw_shapes(function):
+        with lock:
+            function(tur)
+
+    t1 = threading.Thread(target = draw_shapes, args = (draw_squares, ))
+    t2 = threading.Thread(target = draw_shapes, args = (draw_circles, ))
+    t3 = threading.Thread(target = draw_shapes, args = (draw_triangles, ))
+    t4 = threading.Thread(target = draw_shapes, args = (draw_rectangles, ))
 
     threads = [t1, t2, t3, t4]
 
-    t1.start()
-    t2.start()
-    t3.start()
-    t4.start()
 
-    t1.join()
-    t2.join()
-    t3.join()
-    t4.join()
+    for thread in threads:
+        thread.start()
+
+    for thread in threads:
+        thread.join()
+# ----------------------------------------------------------------------
+    # def draw_squares_thread(tur):
+    #     # with lock:
+    #         draw_squares(tur)   
+
+    # def draw_circles_thread(tur):
+    #     # with lock:
+    #         draw_circles(tur)
+
+    # def draw_triangles_thread(tur):
+    #     # with lock:
+    #         draw_triangles(tur)
+        
+    # def draw_rectangles_thread(tur):
+    #     # with lock:
+    #         draw_rectangles(tur)
+
+    # def draw_shape(tur, lock, function):
+    #     with lock:
+    #         if function == 1:
+    #             # with lock:
+    #                 draw_squares_thread(tur)
+    #         elif function == 2:
+    #             # with lock:
+    #                 draw_circles_thread(tur)
+    #         elif function == 3:
+    #             # with lock:
+    #                 draw_triangles_thread(tur)
+    #         elif function == 4:
+    #             # with lock:
+    #                 draw_rectangles_thread(tur)
+
+    # lock = threading.Lock()
+
+    # threads = [
+    #     threading.Thread(target=draw_shape, args=(tur, lock, 1)),
+    #     threading.Thread(target=draw_shape, args=(tur, lock, 2)),
+    #     threading.Thread(target=draw_shape, args=(tur, lock, 3)),
+    #     threading.Thread(target=draw_shape, args=(tur, lock, 4))
+    # ]
+
+    # for thread in threads:
+    #     thread.start()
+
+    # for thread in threads:
+    #     thread.join()
+
+# ----------------------------------------------------------------------
+
+    # def draw_squares_thread(tur, lock):
+    #     with lock:
+    #         draw_squares(tur)   
+
+    # def draw_circles_thread(tur, lock):
+    #     with lock:
+    #         draw_circles(tur)
+
+    # def draw_triangles_thread(tur, lock):
+    #     with lock:
+    #         draw_triangles(tur)
+        
+    # def draw_rectangles_thread(tur, lock):
+    #     with lock:
+    #         draw_rectangles(tur)
+
+
+
+    # lock = threading.Lock()
+
+    # threads = [
+    #     threading.Thread(target=draw_squares_thread, args=(tur, lock)),
+    #     threading.Thread(target=draw_circles_thread, args=(tur, lock)),
+    #     threading.Thread(target=draw_triangles_thread, args=(tur, lock)),
+    #     threading.Thread(target=draw_rectangles_thread, args=(tur, lock))
+    # ]
+
+    # for thread in threads:
+    #     thread.start()
+
+    # for thread in threads:
+    #     thread.join()
+# ----------------------------------------------------------------------
+    # My attempt at doing it yet another way.
+    # def draw_threads(shape):
+
+    #     with lock:
+    #         shape.start()
+
+    # circle = threading.Thread(target = draw_circles_thread, args = (tur, ))
+    # square = threading.Thread(target = draw_squares_thread, args = (tur, ))
+    # triangle = threading.Thread(target = draw_triangles_thread, args = (tur, ))
+    # rectangle = threading.Thread(target = draw_rectangles_thread, args = (tur, ))
+
+    # shapes = [circle, square, triangle, rectangle]
+
+
+
+    # for shape in shapes:
+    #     draw_threads(shape)
+
+    # put all the draw functions in a list and then iterate though it with a lock
     
+# ----------------------------------------------------------------------    
+    
+    # drawFunctions = [draw_circles(tur), draw_rectangles(tur), draw_triangles(tur), draw_squares(tur)]
+
+    # for function in drawFunctions:
+    #     function = threading.Thread(target = function, args = (tur, ))
+    #     function.start()
+
+
+    # t1 = threading.Thread(target = draw_rectangles_thread, args = (tur, ))
+    # t1.start()
+    # t2 = threading.Thread(target = draw_squares_thread, args = (tur, ))
+    # t2.start()
+    # t3 = threading.Thread(target = draw_triangles_thread, args = (tur, ))
+    # t3.start()
+    # t4 = threading.Thread(target = draw_circles_thread, args = (tur, ))
+    # t4.start()
+
+
+    # threads = [t1, t2, t3, t4]
+
+
+    # these threads draw the funciton without locks causing random lines everywhere
+    # t1 = threading.Thread(target = draw_squares, args = (tur, ))
+    # t2 = threading.Thread(target = draw_circles, args = (tur, ))
+    # t3 = threading.Thread(target = draw_triangles, args = (tur, ))
+    # t4 = threading.Thread(target = draw_rectangles, args = (tur, ))
+
+# ----------------------------------------------------------------------
+    # simple for loops to start and join threads
+    # for i in threads:
+    #     i.start()
+
+    # for i in threads:
+    #     i.join()
+
+    # manual start to threads
+    # t1.start()
+    # t2.start()
+    # t3.start()
+    # t4.start()
+
+    # manual join to threads
+    # t1.join()
+    # t2.join()
+    # t3.join()
+    # t4.join()
+
+    # t1 = threading.Thread(target = draw_squares, args = tur,)
+    # t1.start()
+    
+    # t2 = threading.Thread(target = draw_circles, args = tur,)
+    # t2.start()
+
+    # t3 = threading.Thread(target = draw_triangles, args = tur,)
+    # t3.start()
+
+    # t4 = threading.Thread(target = draw_rectangles, args = tur,)
+    # t4.start()
+        
+# ----------------------------------------------------------------------
     log.step_timer('All drawing commands have been created')
 
     log.write(f'Number of Drawing Commands: {tur.get_command_count()}')
