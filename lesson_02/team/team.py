@@ -35,7 +35,7 @@ class Request_thread(threading.Thread):
         response = requests.get(self.url)
         self.status_code = response.status_code
 
-        if response.status == 200:
+        if response.status_code == 200:
             self.response = response.json()
         else:
             print('Response = ', response.status_code)
@@ -65,6 +65,11 @@ class Deck:
         get = Request_thread(rf'https://deckofcardsapi.com/api/deck/{self.id}/draw/?count=2')
         get.start()
         get.join()
+        if get.status_code == 200 and get.response != {}:
+            self.remaining = get.response['remaining']
+            return get.response['cards'][0]['code']
+        else:
+            return ''
 
     def cards_remaining(self):
         return self.remaining
