@@ -1,8 +1,10 @@
+# I wrote out what I could but I couldn't test it due to problems I had while trying to run the server.py file. I spoke with Brother Comeau a bit but I'll have to try to find
+# time to come in so that I can try to solve whatever problem I'm having... 
 """
 Course: CSE 251 
 Lesson: L02 Prove
 File:   prove.py
-Author: <Add name here>
+Author: Teia Patane
 
 Purpose: Retrieve Star Wars details from a server
 
@@ -42,9 +44,9 @@ from datetime import datetime, timedelta
 import requests
 import json
 import threading
+from cse251 import *
 
 # Include cse 251 common Python files
-from cse251 import *
 
 # Const Values
 TOP_API_URL = 'http://127.0.0.1:8790'
@@ -77,15 +79,26 @@ class Request_thread(threading.Thread):
 
 # TODO Add any functions you need here
 # A display funciton.
-def display():
+def display(data):
+    print('Displaying Results:')
     print()
+    # prints all data written to json file and uses indent to make it look "nice"
+    print(json.dumps(data, indent = 2))
 
 def retrieve_API(url):
-    get = threading.Thread()
+    # created a thread that runs the call
+    thread = Request_thread(url)
+    # starts and joins the thread
+    thread.start()
+    thread.join()
 
-def filter_only_film6():
-    for i in range(10):
-        print()
+    return thread.respsone
+
+def filter_only_film6(film_url):
+    # creating a variable that runs the call
+    film_details = retrieve_API(film_url)
+    # prints out the information in the variable
+    print('Film 6 Details: ', film_details)
 
 
 def main():
@@ -93,13 +106,14 @@ def main():
     log.start_timer('Starting to retrieve data from the server')
 
     # TODO Retrieve Top API urls
-    retrieve_API()
+    top_api_urls = retrieve_API(TOP_API_URL)
 
     # TODO Retrieve Details on film 6
-    filter_only_film6()
+    film_url = top_api_urls.get('films')
+    filter_only_film6(film_url)
 
     # TODO Display results
-    display()
+    display(top_api_urls)
     
     log.stop_timer('Total Time To complete')
     log.write(f'There were {call_count} calls to the server')
