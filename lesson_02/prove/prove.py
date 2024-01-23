@@ -113,6 +113,7 @@ def main():
     filter_only_film6(film_url)
 
     # TODO Display results
+    # I know I have to format the data in a certain way but without being able to test it this is as far as I feel I can get.
     display(top_api_urls)
     
     log.stop_timer('Total Time To complete')
