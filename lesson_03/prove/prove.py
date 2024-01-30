@@ -37,15 +37,14 @@ RED = 0
 GREEN = 1
 BLUE = 2
 
-def create_new_frame(image_file, green_file, process_file):
+def create_new_frame(args):
     """"
     Creates a new image file from image_file and green_file.
-    
+
     Parameters:
-        image_file (str):   The path including name of the image to place on the green screen.
-        green_file (str):   The path including name of the green screen image to process.
-        process_file (str): The path including name of the file to save the processed image to.
+        args (tuple): Tuple containing (image_file, green_file, process_file)
     """
+    image_file, green_file, process_file = args
 
     # this print() statement is there to help see which frame is being processed
     print(f'{process_file[-7:-4]}', end=',', flush=True)
@@ -56,7 +55,7 @@ def create_new_frame(image_file, green_file, process_file):
     # Make Numpy array
     np_img = np.array(green_img)
 
-    # Mask pixels 
+    # Mask pixels
     mask = (np_img[:, :, BLUE] < 120) & (np_img[:, :, GREEN] > 120) & (np_img[:, :, RED] < 120)
 
     # Create mask image
@@ -65,35 +64,50 @@ def create_new_frame(image_file, green_file, process_file):
     image_new = Image.composite(image_img, green_img, mask_img)
     image_new.save(process_file)
 
-
-def main():
-    all_process_time = timeit.default_timer()
+def process_frames_with_pool(cpu_count):
     log = Log(show_terminal=True)
 
     xaxis_cpus = []
     yaxis_times = []
 
-    # TODO Process all frames trying 1 cpu, then 2, then 3, ... to CPU_COUNT
+    all_process_time = timeit.default_timer()
 
-    # sample code: remove before submitting  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-    # process one frame #10
-    image_number = 10
-
-    image_file = rf'elephant\image{image_number:03d}.png'
-    green_file = rf'green\image{image_number:03d}.png'
-    process_file = rf'processed\image{image_number:03d}.png'
+    pool = mp.Pool(processes=cpu_count)
+    
+    # Generate the list of arguments for create_new_frame function
+    args_list = [(f'elephant/image{i:03d}.png', f'green/image{i:03d}.png', f'processed/image{i:03d}.png') for i in range(1, FRAME_COUNT + 1)]
 
     start_time = timeit.default_timer()
-    create_new_frame(image_file, green_file, process_file)
-    print(f'\nTime To Process all images = {timeit.default_timer() - start_time}')
-    # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+    # Use pool.map() to process frames in parallel
+    pool.map(create_new_frame, args_list)
+
+    total_time = timeit.default_timer() - start_time
+
+    xaxis_cpus.append(cpu_count)
+    yaxis_times.append(total_time)
 
     # Log the total time this took
-    log.write(f'Total Time for ALL processing: {timeit.default_timer() - all_process_time}')
+    log.write(f'Total Time for {cpu_count} CPU Cores: {total_time}')
+
+    pool.close()
+    pool.join()
+
+    return xaxis_cpus, yaxis_times
+
+def main():
+    xaxis_cpus_all = []
+    yaxis_times_all = []
+
+    # Process frames for each CPU core count from 1 to CPU_COUNT
+    for cpu_count in range(1, CPU_COUNT + 1):
+        xaxis_cpus, yaxis_times = process_frames_with_pool(cpu_count)
+        xaxis_cpus_all.extend(xaxis_cpus)
+        yaxis_times_all.extend(yaxis_times)
 
     # create plot of results and also save it to a PNG file
-    plt.plot(xaxis_cpus, yaxis_times, label=f'{FRAME_COUNT}')
-    
+    plt.plot(xaxis_cpus_all, yaxis_times_all, label=f'{FRAME_COUNT}')
+
     plt.title('CPU Core yaxis_times VS CPUs')
     plt.xlabel('CPU Cores')
     plt.ylabel('Seconds')
@@ -102,7 +116,6 @@ def main():
     plt.tight_layout()
     plt.savefig(f'Plot for {FRAME_COUNT} frames.png')
     plt.show()
-
 
 if __name__ == "__main__":
     ensure_assignment_is_setup()
