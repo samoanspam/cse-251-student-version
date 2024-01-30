@@ -87,9 +87,6 @@ def process_frames_with_pool(cpu_count):
     xaxis_cpus.append(cpu_count)
     yaxis_times.append(total_time)
 
-    # Log the total time this took
-    log.write(f'Total Time for {cpu_count} CPU Cores: {total_time}')
-
     pool.close()
     pool.join()
 
@@ -104,6 +101,9 @@ def main():
         xaxis_cpus, yaxis_times = process_frames_with_pool(cpu_count)
         xaxis_cpus_all.extend(xaxis_cpus)
         yaxis_times_all.extend(yaxis_times)
+
+        # Print the total time this took for the current CPU core count
+        print(f'Total Time for {cpu_count} CPU Cores: {yaxis_times[-1]}')
 
     # create plot of results and also save it to a PNG file
     plt.plot(xaxis_cpus_all, yaxis_times_all, label=f'{FRAME_COUNT}')
