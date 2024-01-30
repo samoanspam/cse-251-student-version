@@ -1,20 +1,3 @@
-"""
-Course: CSE 251 
-Lesson: L03 Prove
-File:   prove.py
-Author: <Add name here>
-
-Purpose: Video Frame Processing
-
-Instructions:
-
-- Follow the instructions found in Canvas for this assignment.
-- No other packages or modules are allowed to be used in this assignment.
-  Do not change any of the from and import statements.
-- Only process the given MP4 files for this assignment.
-- Do not forget to complete any TODO comments.
-"""
-
 from matplotlib.pylab import plt  # load plot library
 from setup import setup as ensure_assignment_is_setup
 from PIL import Image
@@ -30,7 +13,7 @@ CPU_COUNT = mp.cpu_count() + 4
 
 # TODO Your final video needs to have 300 processed frames.
 # However, while you are testing your code, set this much lower!
-FRAME_COUNT = 20
+FRAME_COUNT = 300
 
 # RGB values for reference
 RED = 0
@@ -70,7 +53,7 @@ def process_frames_with_pool(cpu_count):
     xaxis_cpus = []
     yaxis_times = []
 
-    all_process_time = timeit.default_timer()
+    # all_process_time = timeit.default_timer()
 
     pool = mp.Pool(processes=cpu_count)
     
@@ -87,6 +70,10 @@ def process_frames_with_pool(cpu_count):
     xaxis_cpus.append(cpu_count)
     yaxis_times.append(total_time)
 
+    # Log the total time this took
+    log.write(f'Total Time for {cpu_count} CPU Cores: {total_time} seconds.')
+    print()
+
     pool.close()
     pool.join()
 
@@ -96,19 +83,22 @@ def main():
     xaxis_cpus_all = []
     yaxis_times_all = []
 
+    log = Log(show_terminal=True)
+
     # Process frames for each CPU core count from 1 to CPU_COUNT
     for cpu_count in range(1, CPU_COUNT + 1):
         xaxis_cpus, yaxis_times = process_frames_with_pool(cpu_count)
         xaxis_cpus_all.extend(xaxis_cpus)
         yaxis_times_all.extend(yaxis_times)
 
-        # Print the total time this took for the current CPU core count
-        print(f'Total Time for {cpu_count} CPU Cores: {yaxis_times[-1]}')
+    # Calculate and print the total time
+    total_time = sum(yaxis_times_all)
+    log.write(f'Total Time for ALL PROCESSES: {total_time} seconds.')
 
     # create plot of results and also save it to a PNG file
     plt.plot(xaxis_cpus_all, yaxis_times_all, label=f'{FRAME_COUNT}')
 
-    plt.title('CPU Core yaxis_times VS CPUs')
+    plt.title('CPU Core Times VS CPUs')
     plt.xlabel('CPU Cores')
     plt.ylabel('Seconds')
     plt.legend(loc='best')
