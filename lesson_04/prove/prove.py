@@ -1,22 +1,6 @@
-"""
-Course: CSE 251 
-Lesson: L04 Prove
-File:   prove.py
-Author: <Add name here>
-
-Purpose: Assignment 04 - Factory and Dealership
-
-Instructions:
-
-- Complete the assignments TODO sections and DO NOT edit parts you were told to leave alone.
-- Review the full instructions in Canvas; there are a lot of DO NOTS in this lesson.
-"""
-
 import time
 import threading
 import random
-
-# Include cse 251 common Python files
 from cse251 import *
 
 # Global Constants - DO NOT CHANGE
@@ -73,19 +57,19 @@ class Queue251():
     def get(self):
         return self.items.pop(0)
 
-
 class Factory(threading.Thread):
-    """ This is a factory.  It will create cars and place them on the car queue """
-
-    def __init__(self, queue, semaphore):
+    def __init__(self, queue, produce_semaphore, consume_semaphore):
         threading.Thread.__init__(self)
         self.queue = queue
-        self.semaphore = semaphore
-
+        self.produce_semaphore = produce_semaphore
+        self.consume_semaphore = consume_semaphore
 
     def run(self):
         for i in range(CARS_TO_PRODUCE):
             car = Car()
+
+            # Acquire the produce_semaphore to check if the queue is at its maximum size
+            self.produce_semaphore.acquire()
 
             # Check if the queue is at its maximum size before putting the car
             while self.queue.size() >= MAX_QUEUE_SIZE:
@@ -93,27 +77,32 @@ class Factory(threading.Thread):
 
             self.queue.put(car)
             print(f'Factory created: {car.info()}')
-            self.semaphore.release()
+
+            # Release the consume_semaphore to indicate that a new car is available
+            self.consume_semaphore.release()
 
         # Signal the dealer that there are no more cars
         final_car = "No more cars"
         self.queue.put(final_car)
-        self.semaphore.release()
+
+        # Release the consume_semaphore to ensure the dealer can exit
+        self.consume_semaphore.release()
 
 
 class Dealer(threading.Thread):
-    """ This is a dealer that receives cars """
-    
-    def __init__(self, queue, semaphore, queue_stats, queue_stats_lock):
+    def __init__(self, queue, produce_semaphore, consume_semaphore, queue_stats, queue_stats_lock):
         threading.Thread.__init__(self)
         self.queue = queue
-        self.semaphore = semaphore
+        self.produce_semaphore = produce_semaphore
+        self.consume_semaphore = consume_semaphore
         self.queue_stats = queue_stats
         self.queue_stats_lock = queue_stats_lock
 
     def run(self):
         for i in range(CARS_TO_PRODUCE):
-            self.semaphore.acquire()
+            # Acquire the consume_semaphore to check if a car is available in the queue
+            self.consume_semaphore.acquire()
+
             car = self.queue.get()
 
             if car == "No more cars":
@@ -126,6 +115,9 @@ class Dealer(threading.Thread):
             with self.queue_stats_lock:
                 self.queue_stats[self.queue.size()] += 1
 
+            # Release the produce_semaphore to indicate that the queue has space for a new car
+            self.produce_semaphore.release()
+
             # Last statement in this for loop - don't change
             time.sleep(random.random() / (SLEEP_REDUCE_FACTOR))
 
@@ -135,18 +127,15 @@ def main():
 
     log.start_timer()
     
-    
-    semaphore = threading.Semaphore(0)
+    produce_semaphore = threading.Semaphore(MAX_QUEUE_SIZE)
+    consume_semaphore = threading.Semaphore(0)
     queue = Queue251()
-
 
     queue_stats_lock = threading.Lock()
     queue_stats = [0] * MAX_QUEUE_SIZE
 
-
-    factory = Factory(queue, semaphore)
-    dealer = Dealer(queue, semaphore, queue_stats, queue_stats_lock)
-
+    factory = Factory(queue, produce_semaphore, consume_semaphore)
+    dealer = Dealer(queue, produce_semaphore, consume_semaphore, queue_stats, queue_stats_lock)
 
     factory.start()
     dealer.start()
@@ -154,13 +143,11 @@ def main():
     factory.join()
     dealer.join()
 
-
     log.stop_timer(f'All {CARS_TO_PRODUCE} cars have been created. ')
 
     xaxis = [i for i in range(1, MAX_QUEUE_SIZE + 1)]
     plot = Plots()
-    plot.bar(xaxis, queue_stats, title=f'{sum(queue_stats)} Produced: Count VS Queue Size', x_label='Queue Size', y_label='Count', filename='Production count vs queue size.png')
-
+    plot.bar(xaxis, queue_stats, title=f'{sum(queue_stats)} Produced: Count VS Queue Size', x_label='Queue Size', y_label='Count', filename='Production Count vs Queue Size.png')
 
 
 if __name__ == '__main__':
