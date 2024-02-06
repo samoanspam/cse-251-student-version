@@ -104,10 +104,12 @@ class Factory(threading.Thread):
 class Dealer(threading.Thread):
     """ This is a dealer that receives cars """
     
-    def __init__(self, queue, semaphore):
+    def __init__(self, queue, semaphore, queue_stats, queue_stats_lock):
         threading.Thread.__init__(self)
         self.queue = queue
         self.semaphore = semaphore
+        self.queue_stats = queue_stats
+        self.queue_stats_lock = queue_stats_lock
 
     def run(self):
         for i in range(CARS_TO_PRODUCE):
@@ -120,7 +122,10 @@ class Dealer(threading.Thread):
 
             print(f'Dealership sold: {car.info()}')
 
-            # Sleep a little after selling a car
+            # Update queue_stats when the dealer receives a car
+            with self.queue_stats_lock:
+                self.queue_stats[self.queue.size()] += 1
+
             # Last statement in this for loop - don't change
             time.sleep(random.random() / (SLEEP_REDUCE_FACTOR))
 
@@ -130,15 +135,18 @@ def main():
 
     log.start_timer()
     
+    
     semaphore = threading.Semaphore(0)
     queue = Queue251()
 
-    factory = Factory(queue, semaphore)
-    dealer = Dealer(queue, semaphore)
 
-    # This tracks the length of the car queue during receiving cars by the dealership
-    # i.e., update this list each time the dealer receives a car
+    queue_stats_lock = threading.Lock()
     queue_stats = [0] * MAX_QUEUE_SIZE
+
+
+    factory = Factory(queue, semaphore)
+    dealer = Dealer(queue, semaphore, queue_stats, queue_stats_lock)
+
 
     factory.start()
     dealer.start()
