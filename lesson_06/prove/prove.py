@@ -1,3 +1,15 @@
+"""
+Course: CSE 251 
+Lesson: L06 Prove
+File:   prove.py
+Author: Teia Patane
+
+Purpose: Processing Plant
+
+Instructions:
+
+- Implement the necessary classes to allow gifts to be created.
+"""
 import random
 import multiprocessing as mp
 import os.path
