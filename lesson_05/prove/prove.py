@@ -107,14 +107,12 @@ class Dealer(threading.Thread):
                 car = self.car_queue.get()
                 self.update_cars_sold()
             else:
-                self.semaphore.release()
+                self.semaphore.release()  # Release the semaphore if the queue is empty
                 break
-            self.semaphore.release()
 
     def update_cars_sold(self):
         with self.lock:
             self.cars_sold += 1
-
 
 
 def run_production(factory_count, dealer_count):
@@ -128,6 +126,9 @@ def run_production(factory_count, dealer_count):
     factories = [Factory(car_queue, semaphore) for _ in range(factory_count)]
     dealers = [Dealer(car_queue, semaphore, lock) for _ in range(dealer_count)]
 
+    # Create a barrier for synchronization
+    # barrier = threading.Barrier(factory_count + dealer_count)
+
     start_time = time.time()
 
     # Start all factories
@@ -138,11 +139,12 @@ def run_production(factory_count, dealer_count):
     for dealer in dealers:
         dealer.start()
 
-    # Wait for all factories to finish
+    # Wait for all factories and dealerships to reach the barrier
+    # barrier.wait()
+
+    # Wait for all factories and dealerships to finish
     for factory in factories:
         factory.join()
-
-    # Wait for all dealerships to finish
     for dealer in dealers:
         dealer.join()
 
@@ -151,7 +153,6 @@ def run_production(factory_count, dealer_count):
     run_time = end_time - start_time
 
     return run_time, car_queue.max_size, [dealer.cars_sold for dealer in dealers], [factory.cars_to_produce for factory in factories]
-
 
 
 def main(log):
@@ -177,3 +178,6 @@ def main(log):
 if __name__ == '__main__':
     log = Log(show_terminal=True)
     main(log)
+
+
+
