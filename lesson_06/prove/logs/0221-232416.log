@@ -1,0 +1,12 @@
+23:24:16| Marble count     = 1000
+23:24:16| Marble delay     = 0.01
+23:24:16| Marbles in a bag = 7
+23:24:16| Bagger delay     = 0.05
+23:24:16| Assembler delay  = 0.05
+23:24:16| Wrapper delay    = 0.05
+23:24:16| Create the processes
+23:24:16| Starting the processes
+23:24:16| Waiting for processes to finish
+23:24:18| Contents of boxes.txt
+23:24:18| Number of gifts created: 0
+23:24:18| Total time = 1.95395420
