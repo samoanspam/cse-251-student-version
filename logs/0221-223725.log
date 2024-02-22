@@ -1,0 +1,21 @@
+22:37:31| Factories      : 1
+22:37:31| Dealerships    : 1
+22:37:31| Run Time       : 5.2817
+22:37:31| Max queue size : 261
+22:37:31| Factory Stats  : Made = 261 @ [261]
+22:37:31| Dealer Stats   : Sold = 0 @ [0]
+22:37:31| 
+22:37:35| Factories      : 1
+22:37:35| Dealerships    : 2
+22:37:35| Run Time       : 4.3509
+22:37:35| Max queue size : 224
+22:37:35| Factory Stats  : Made = 224 @ [224]
+22:37:35| Dealer Stats   : Sold = 0 @ [0, 0]
+22:37:35| 
+22:37:40| Factories      : 2
+22:37:40| Dealerships    : 1
+22:37:40| Run Time       : 4.7672
+22:37:40| Max queue size : 451
+22:37:40| Factory Stats  : Made = 451 @ [206, 245]
+22:37:40| Dealer Stats   : Sold = 0 @ [0]
+22:37:40| 
