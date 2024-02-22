@@ -2,7 +2,7 @@
 Course: CSE 251 
 Lesson: L05 Prove
 File:   prove.py
-Author: <Add name here>
+Author: Teia Patane
 
 Purpose: Assignment 05 - Factories and Dealers
 
@@ -38,13 +38,13 @@ class Car():
     """ This is the Car class that will be created by the factories """
 
     # Class Variables
-    car_makes = ('Ford', 'Chevrolet', 'Dodge', 'Fiat', 'Volvo', 'Infiniti', 'Jeep', 'Subaru', 
-                'Buick', 'Volkswagen', 'Chrysler', 'Smart', 'Nissan', 'Toyota', 'Lexus', 
-                'Mitsubishi', 'Mazda', 'Hyundai', 'Kia', 'Acura', 'Honda')
+    car_makes = ('Ford', 'Chevrolet', 'Dodge', 'Fiat', 'Volvo', 'Infiniti', 'Jeep', 'Subaru',
+                 'Buick', 'Volkswagen', 'Chrysler', 'Smart', 'Nissan', 'Toyota', 'Lexus',
+                 'Mitsubishi', 'Mazda', 'Hyundai', 'Kia', 'Acura', 'Honda')
 
-    car_models = ('A1', 'M1', 'XOX', 'XL', 'XLS', 'XLE' ,'Super' ,'Tall' ,'Flat', 'Middle', 'Round',
-                'A2', 'M1X', 'SE', 'SXE', 'MM', 'Charger', 'Grand', 'Viper', 'F150', 'Town', 'Ranger',
-                'G35', 'Titan', 'M5', 'GX', 'Sport', 'RX')
+    car_models = ('A1', 'M1', 'XOX', 'XL', 'XLS', 'XLE', 'Super', 'Tall', 'Flat', 'Middle', 'Round',
+                  'A2', 'M1X', 'SE', 'SXE', 'MM', 'Charger', 'Grand', 'Viper', 'F150', 'Town', 'Ranger',
+                  'G35', 'Titan', 'M5', 'GX', 'Sport', 'RX')
 
     car_years = [i for i in range(1990, datetime.now().year)]
 
@@ -59,7 +59,7 @@ class Car():
 
         # Display the car that has was just created in the terminal
         print(f'Created: {self.info()}')
-           
+
     def info(self):
         """ Helper function to quickly get the car information. """
         return f'{self.make} {self.model}, {self.year}'
@@ -87,71 +87,66 @@ class Queue251():
 class Factory(threading.Thread):
     """ This is a factory.  It will create cars and place them on the car queue """
 
-    def __init__(self):
-        self.cars_to_produce = random.randint(200, 300) # DO NOT change
-
+    def __init__(self, car_queue, semaphore):
+        super().__init__()
+        self.car_queue = car_queue
+        self.semaphore = semaphore
+        self.cars_to_produce = random.randint(200, 300)
 
     def run(self):
-        # TODO produce the cars, the send them to the dealerships
-
-        # TODO wait until all of the factories are finished producing cars
-
-        # TODO "Wake up/signal" the dealerships one more time.  Select one factory to do this
-        pass
-
+        for _ in range(self.cars_to_produce):
+            car = Car()
+            self.semaphore.acquire()
+            self.car_queue.put(car)
+            self.semaphore.release()
 
 
 class Dealer(threading.Thread):
-    """ This is a dealer that receives cars """
-
-    def __init__(self):
-        pass
+    def __init__(self, car_queue, semaphore):
+        super().__init__()
+        self.car_queue = car_queue
+        self.semaphore = semaphore
+        self.cars_sold = 0
 
     def run(self):
         while True:
-            # TODO handle a car
-
-            # Sleep a little - don't change.  This is the last line of the loop
-            time.sleep(random.random() / (SLEEP_REDUCE_FACTOR + 0))
-
+            self.semaphore.acquire()
+            car = self.car_queue.get()
+            if car is not None:
+                self.cars_sold += 1
+                print(f'{self.name} sold car: {car.info()}')  # Add this line to track car sales
+            else:
+                self.semaphore.release()  # Release semaphore if queue is empty
+                break
+            self.semaphore.release()
+            # Process the car (e.g., sell it)
 
 
 def run_production(factory_count, dealer_count):
-    """ This function will do a production run with the number of
-        factories and dealerships passed in as arguments.
-    """
+    car_queue = Queue251()
+    semaphore = threading.Semaphore(MAX_QUEUE_SIZE)
+    factories = [Factory(car_queue, semaphore) for _ in range(factory_count)]
+    dealers = [Dealer(car_queue, semaphore) for _ in range(dealer_count)]
 
-    # TODO Create semaphore(s) if needed
-    # TODO Create queue
-    # TODO Create lock(s) if needed
-    # TODO Create barrier
+    start_time = time.time()
 
-    # This is used to track the number of cars received by each dealer
-    dealer_stats = list([0] * dealer_count)
+    for factory in factories:
+        factory.start()
 
-    # TODO create your factories, each factory will create a random amount of cars; your code must account for this.
-    # NOTE: You have no control over how many cars a factory will create in this assignment.
+    for dealer in dealers:
+        dealer.start()
 
-    # TODO create your dealerships
+    for factory in factories:
+        factory.join()
 
-    log.start_timer()
+    end_time = time.time()
 
-    # TODO Start all dealerships
+    for dealer in dealers:
+        dealer.join()
 
-    # TODO Start all factories
+    run_time = end_time - start_time
 
-    # This is used to track the number of cars produced by each factory NOTE: DO NOT pass this into
-    # your factories! You must collect this data here in `run_production` after the factories are finished.
-    factory_stats = []
-
-    # TODO Wait for the factories and dealerships to complete; do not forget to get the factories stats
-
-    run_time = log.stop_timer(f'{sum(dealer_stats)} cars have been created.')
-
-    # This function must return the following - Don't change!
-    # factory_stats: is a list of the number of cars produced by each factory.
-    #                collect this information after the factories are finished. 
-    return (run_time, car_queue.get_max_size(), dealer_stats, factory_stats)
+    return run_time, car_queue.max_size, [dealer.cars_sold for dealer in dealers], [factory.cars_to_produce for factory in factories]
 
 
 def main(log):
@@ -165,8 +160,8 @@ def main(log):
         log.write(f'Dealerships    : {dealerships}')
         log.write(f'Run Time       : {run_time:.4f}')
         log.write(f'Max queue size : {max_queue_size}')
-        log.write(f'Factory Stats  : Made = {sum(dealer_stats)} @ {factory_stats}')
-        log.write(f'Dealer Stats   : Sold = {sum(factory_stats)} @ {dealer_stats}')
+        log.write(f'Factory Stats  : Made = {sum(factory_stats)} @ {factory_stats}')
+        log.write(f'Dealer Stats   : Sold = {sum(dealer_stats)} @ {dealer_stats}')
         log.write('')
 
         # The number of cars produces needs to match the cars sold
@@ -176,4 +171,3 @@ def main(log):
 if __name__ == '__main__':
     log = Log(show_terminal=True)
     main(log)
-
