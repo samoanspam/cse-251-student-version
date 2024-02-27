@@ -14,30 +14,8 @@ below before submitting this file:
 TODO:
 
 Add your comments here on the pool sizes that you used for your assignment and why they were the best choices.
-"""
 
-from datetime import datetime, timedelta
-import requests
-import multiprocessing as mp
-from matplotlib.pylab import plt
-import numpy as np
-import glob
-import math 
-import os
 
-# Include cse 251 common Python files - Dont change
-from cse251 import *
-
-# Constants - Don't change
-TYPE_PRIME  = 'prime'
-TYPE_WORD   = 'word'
-TYPE_UPPER  = 'upper'
-TYPE_SUM    = 'sum'
-TYPE_NAME   = 'name'
-
-# TODO: Change the pool sizes and explain your reasoning in the header comment
-
-"""
 Reasonings for Pool Sizes
 
 PRIME: I chose two for this pool size due to it being an I/O Bound task while still giving it enough
@@ -60,6 +38,27 @@ I only have 6 cores on the device I'm coding with so with that I didn't exceed a
 If I ever did my whole computer would crash. I think that the pool sizes I currently have work best for 
 my device.
 """
+
+from datetime import datetime, timedelta
+import requests
+import multiprocessing as mp
+from matplotlib.pylab import plt
+import numpy as np
+import glob
+import math 
+import os
+
+# Include cse 251 common Python files - Dont change
+from cse251 import *
+
+# Constants - Don't change
+TYPE_PRIME  = 'prime'
+TYPE_WORD   = 'word'
+TYPE_UPPER  = 'upper'
+TYPE_SUM    = 'sum'
+TYPE_NAME   = 'name'
+
+# TODO: Change the pool sizes and explain your reasoning in the header comment
 
 PRIME_POOL_SIZE = 2
 WORD_POOL_SIZE  = 2
@@ -104,6 +103,7 @@ def task_prime(value):
     else:
         return f'{value} is not prime'
 
+
 def task_word(word):
     """
     search in file 'words.txt'
@@ -121,12 +121,14 @@ def task_word(word):
     else:
         return 'words.txt not found'
 
+
 def task_upper(text):
     """
     Return:
         {text} ==>  uppercase version of {text}
     """
     return f'{text} ==> {text.upper()}'
+
 
 def task_sum(start_value, end_value):
     """
@@ -135,6 +137,7 @@ def task_sum(start_value, end_value):
     """
     total = sum(range(start_value, end_value + 1))
     return f'sum of {start_value:,} to {end_value:,} = {total:,}'
+
 
 def task_name(url):
     """
@@ -151,8 +154,6 @@ def task_name(url):
         return f'{url} had an error receiving the information'
 
 
-
-
 def main():
     log = Log(show_terminal=True)
     log.start_timer()
@@ -164,7 +165,7 @@ def main():
     sum_pool = mp.Pool(processes=SUM_POOL_SIZE)
     name_pool = mp.Pool(processes=NAME_POOL_SIZE)
 
-    # Function to process each task type
+    # Function to process each task type.  
     def process_task(task):
         task_type = task['task']
         if task_type == TYPE_PRIME:
@@ -179,6 +180,9 @@ def main():
             name_pool.apply_async(task_name, args=(task['url'],), callback= lambda x: result_names.append(x))
         else:
             log.write(f'Error: unknown task type {task_type}')
+    # I could have probably made it a test case so that it doesn't have ot itterate
+    # through the whole if statement to find a "NAME" task.
+
 
     # Load and process task files
     count = 0
