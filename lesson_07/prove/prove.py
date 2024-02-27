@@ -37,11 +37,35 @@ TYPE_NAME   = 'name'
 
 # TODO: Change the pool sizes and explain your reasoning in the header comment
 
+"""
+Reasonings for Pool Sizes
+
+PRIME: I chose two for this pool size due to it being an I/O Bound task while still giving it enough
+resources to accomplish all 1000 tasks as fast as possible.
+
+WORD: The same goes for the word task, I put it at two due to it having to go and reference from 
+a different file in a different location.
+
+UPPER: This one is two due to it being an I/O bound task while again giving it a ton of resources
+seeing as it needs to run 1000 times.
+
+SUM: Again, it's a simple I/O bound task so I gave it a "low" amount of processes to finish all 1000
+tasks.
+
+NAME: Due to this task having to do a call and response to an API I gave it a size of 4. Through theory
+and testing I found that this brought my total time to process down from 40 seconds to 20.
+
+OVERALL:
+I only have 6 cores on the device I'm coding with so with that I didn't exceed a total pool size of 12.
+If I ever did my whole computer would crash. I think that the pool sizes I currently have work best for 
+my device.
+"""
+
 PRIME_POOL_SIZE = 2
-WORD_POOL_SIZE  = 4
+WORD_POOL_SIZE  = 2
 UPPER_POOL_SIZE = 2
 SUM_POOL_SIZE   = 2
-NAME_POOL_SIZE  = 2
+NAME_POOL_SIZE  = 4
 
 # Global lists to collect the task results
 result_primes = []
