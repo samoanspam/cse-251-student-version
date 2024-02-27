@@ -2,7 +2,7 @@
 Course: CSE 251 
 Lesson: L07 Prove
 File:   prove.py
-Author: <Add name here>
+Author: Teia Patane
 
 Purpose: Process Task Files.
 
